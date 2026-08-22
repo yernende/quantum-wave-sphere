@@ -31,17 +31,17 @@ The first version does not include:
 
 ## 1. Prepare the bootstrap for a static sphere
 
-- [ ] Keep the existing GLFW window, OpenGL context, and render loop.
-- [ ] Keep the working `ShaderProgram`.
-- [ ] Enable the depth test:
+- [x] Keep the existing GLFW window, OpenGL context, and render loop.
+- [x] Keep the working `ShaderProgram`.
+- [x] Enable the depth test:
 
 ```cpp
 glEnable(GL_DEPTH_TEST);
 ```
 
-- [ ] Keep back-face culling disabled for now so winding errors do not hide the geometry.
-- [ ] Set the viewport at startup and whenever the window is resized.
-- [ ] Clear the depth buffer together with the screen:
+- [x] Keep back-face culling disabled for now so winding errors do not hide the geometry.
+- [x] Set the viewport at startup and whenever the window is resized.
+- [x] Clear the depth buffer together with the screen:
 
 ```cpp
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

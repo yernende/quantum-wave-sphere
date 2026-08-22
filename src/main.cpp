@@ -24,6 +24,8 @@ int run(const qws::AppOptions& options) {
     const int loaded_version = qws::load_opengl();
     qws::initialize_opengl_diagnostics(loaded_version);
 
+    glEnable(GL_DEPTH_TEST);
+
     qws::SmokeTest smoke_test{options.run_mode};
     glfwSwapInterval(smoke_test.enabled() ? 0 : 1);
 
@@ -41,7 +43,7 @@ int run(const qws::AppOptions& options) {
         glfwGetFramebufferSize(window.get(), &framebuffer_width, &framebuffer_height);
         glViewport(0, 0, framebuffer_width, framebuffer_height);
         glClearColor(0.025F, 0.035F, 0.055F, 1.0F);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         triangle.draw();
         imgui.render();
