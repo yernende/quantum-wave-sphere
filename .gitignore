@@ -1,0 +1,12 @@
+/out/
+/.tools/
+/.cache/
+
+# Editor and platform-local files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+.DS_Store
+imgui.ini

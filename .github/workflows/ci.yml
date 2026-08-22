@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  VCPKG_COMMIT: 9e593bb18ea69cc5095e012465dcd675a822ed0d
+  VCPKG_TAG: 2026.07.29
+
+jobs:
+  windows:
+    name: Windows / MSVC / Ninja
+    runs-on: windows-2022
+    env:
+      VCPKG_ROOT: ${{ runner.temp }}/vcpkg
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bootstrap pinned vcpkg
+        shell: pwsh
+        run: |
+          git clone --depth 1 --branch $env:VCPKG_TAG https://github.com/microsoft/vcpkg.git $env:VCPKG_ROOT
+          $actualCommit = git -C $env:VCPKG_ROOT rev-parse HEAD
+          if ($actualCommit -ne $env:VCPKG_COMMIT) {
+            throw "Unexpected vcpkg commit: $actualCommit"
+          }
+          & "$env:VCPKG_ROOT/bootstrap-vcpkg.bat" -disableMetrics
+
+      - name: Configure, build, and test
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe"
+          $visualStudio = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          & "$visualStudio/Common7/Tools/Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64 -SkipAutomaticLocation
+          cmake --preset windows-msvc-debug -DQWS_WARNINGS_AS_ERRORS=ON
+          cmake --build --preset windows-msvc-debug
+          ctest --preset windows-msvc-debug
+
+  linux:
+    name: Linux / Clang / ASan + UBSan / Ninja
+    runs-on: ubuntu-24.04
+    env:
+      CC: clang
+      CXX: clang++
+      VCPKG_ROOT: ${{ runner.temp }}/vcpkg
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install GLFW build prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes \
+            build-essential \
+            clang \
+            cmake \
+            libglu1-mesa-dev \
+            libxcursor-dev \
+            libxinerama-dev \
+            ninja-build \
+            pkg-config \
+            xorg-dev
+
+      - name: Bootstrap pinned vcpkg
+        run: |
+          git clone --depth 1 --branch "$VCPKG_TAG" https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+          test "$(git -C "$VCPKG_ROOT" rev-parse HEAD)" = "$VCPKG_COMMIT"
+          "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
+
+      - name: Configure, build, and test
+        run: |
+          cmake --preset linux-clang-asan -DQWS_WARNINGS_AS_ERRORS=ON
+          cmake --build --preset linux-clang-asan
+          ctest --preset linux-clang-asan
+
+  macos-policy:
+    name: macOS / unsupported-platform contract
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify the explicit macOS rejection
+        shell: bash
+        run: |
+          set +e
+          cmake -S . -B "$RUNNER_TEMP/qws-macos-policy" -G Ninja 2>&1 | tee "$RUNNER_TEMP/qws-macos-policy.log"
+          cmake_status=${PIPESTATUS[0]}
+          set -e
+          test "$cmake_status" -ne 0
+          grep -F "macOS is unsupported: quantum-wave-sphere requires OpenGL 4.6 Core" "$RUNNER_TEMP/qws-macos-policy.log"
