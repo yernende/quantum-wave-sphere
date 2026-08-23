@@ -41,7 +41,7 @@ glEnable(GL_DEPTH_TEST);
 
 - [x] Keep back-face culling disabled for now so winding errors do not hide the geometry.
 - [x] Set the viewport at startup and whenever the window is resized.
-- [x] Clear the depth buffer together with the screen:
+- [ ] Clear the depth buffer together with the screen:
 
 ```cpp
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

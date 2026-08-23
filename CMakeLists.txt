@@ -48,6 +48,10 @@ target_sources(
         src/support/smoke_test.hpp
         src/ui/imgui_session.cpp
         src/ui/imgui_session.hpp
+        src/graphics/icosphere.hpp
+        src/graphics/icosphere.cpp
+        src/demo/sphere_mesh.hpp
+        src/demo/sphere_mesh.cpp
 )
 set_target_properties(
     quantum_wave_sphere
@@ -70,13 +74,26 @@ qws_configure_target(quantum_wave_sphere)
 if(BUILD_TESTING)
     find_package(Catch2 3 CONFIG REQUIRED)
 
-    add_executable(quantum_wave_sphere_tests tests/app_options_test.cpp)
+    add_executable(quantum_wave_sphere_tests)
+    target_sources(
+        quantum_wave_sphere_tests
+        PRIVATE
+            src/graphics/icosphere.cpp
+            src/graphics/icosphere.hpp
+            tests/app_options_test.cpp
+            tests/icosphere_test.cpp
+    )
     set_target_properties(quantum_wave_sphere_tests PROPERTIES CXX_EXTENSIONS OFF)
     target_include_directories(
         quantum_wave_sphere_tests
         PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src"
     )
-    target_link_libraries(quantum_wave_sphere_tests PRIVATE Catch2::Catch2WithMain)
+    target_link_libraries(
+        quantum_wave_sphere_tests
+        PRIVATE
+            Catch2::Catch2WithMain
+            glm::glm
+    )
     qws_configure_target(quantum_wave_sphere_tests)
 
     include(Catch)
