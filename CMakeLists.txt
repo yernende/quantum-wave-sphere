@@ -37,8 +37,6 @@ target_sources(
         src/main.cpp
         src/bootstrap/glfw_context.cpp
         src/bootstrap/glfw_context.hpp
-        src/demo/triangle_demo.cpp
-        src/demo/triangle_demo.hpp
         src/graphics/shader_program.cpp
         src/graphics/shader_program.hpp
         src/support/app_options.hpp

@@ -18,7 +18,6 @@ namespace {
 
 constexpr int window_width = 1280;
 constexpr int window_height = 720;
-constexpr float sphere_rotation_speed = 0.25F;
 
 int run(const qws::AppOptions& options) {
     const qws::GlfwSession glfw_session{};
@@ -29,15 +28,17 @@ int run(const qws::AppOptions& options) {
     qws::initialize_opengl_diagnostics(loaded_version);
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     qws::SmokeTest smoke_test{options.run_mode};
     glfwSwapInterval(smoke_test.enabled() ? 0 : 1);
 
     // These objects must be destroyed while their OpenGL context is still current.
     const qws::ImGuiSession imgui{window.get()};
-    // qws::TriangleDemo triangle{};
 
-    auto icosphere = qws::make_icosphere(4);
+    auto icosphere = qws::make_icosphere(7);
     auto sphere_mesh = qws::SphereMesh{icosphere};
     const glm::mat4 view =
         glm::lookAt(glm::vec3{0.0F, 0.0F, 3.0F}, glm::vec3{0.0F}, glm::vec3{0.0F, 1.0F, 0.0F});
@@ -55,17 +56,12 @@ int run(const qws::AppOptions& options) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (framebuffer_width > 0 && framebuffer_height > 0) {
-            const float rotation = static_cast<float>(glfwGetTime()) * sphere_rotation_speed;
-
-            const glm::mat4 model_matrix =
-                glm::rotate(glm::mat4{1.0F}, rotation, glm::vec3{0.0F, 1.0F, 0.0F});
-
             const glm::mat4 projection_matrix = glm::perspective(
                 glm::radians(45.0F),
                 static_cast<float>(framebuffer_width) / static_cast<float>(framebuffer_height),
                 0.1F, 100.0F);
 
-            sphere_mesh.draw(model_matrix, view, projection_matrix);
+            sphere_mesh.draw(view, projection_matrix);
         }
 
         imgui.render();
