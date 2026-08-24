@@ -1,18 +1,20 @@
 #include "bootstrap/glfw_context.hpp"
-#include "demo/sphere_mesh.hpp"
-#include "graphics/icosphere.hpp"
+#include "demo/wave_mesh.hpp"
+#include "graphics/geometry_catalog.hpp"
 #include "support/app_options.hpp"
 #include "support/opengl_diagnostics.hpp"
 #include "support/smoke_test.hpp"
 #include "ui/imgui_session.hpp"
 
 #include <GLFW/glfw3.h>
+#include <array>
 #include <exception>
 #include <glad/gl.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/trigonometric.hpp>
 #include <iostream>
 #include <stdexcept>
+#include <utility>
 
 namespace {
 
@@ -38,15 +40,18 @@ int run(const qws::AppOptions& options) {
     // These objects must be destroyed while their OpenGL context is still current.
     const qws::ImGuiSession imgui{window.get()};
 
-    auto icosphere = qws::make_icosphere(7);
-    auto sphere_mesh = qws::SphereMesh{icosphere};
+    std::array<qws::MeshData, qws::geometry_kind_count> showcase_meshes;
+    for (const qws::GeometryKind kind : qws::all_geometry_kinds) {
+        showcase_meshes[qws::geometry_index(kind)] = qws::make_showcase_geometry(kind);
+    }
+    auto wave_mesh = qws::WaveMesh{std::move(showcase_meshes)};
     const glm::mat4 view =
-        glm::lookAt(glm::vec3{0.0F, 0.0F, 3.0F}, glm::vec3{0.0F}, glm::vec3{0.0F, 1.0F, 0.0F});
+        glm::lookAt(glm::vec3{1.15F, 0.85F, 2.65F}, glm::vec3{0.0F}, glm::vec3{0.0F, 1.0F, 0.0F});
 
     while (glfwWindowShouldClose(window.get()) == GLFW_FALSE) {
         glfwPollEvents();
         imgui.begin_frame();
-        sphere_mesh.show_controls();
+        wave_mesh.show_controls();
 
         int framebuffer_width = 0;
         int framebuffer_height = 0;
@@ -61,7 +66,7 @@ int run(const qws::AppOptions& options) {
                 static_cast<float>(framebuffer_width) / static_cast<float>(framebuffer_height),
                 0.1F, 100.0F);
 
-            sphere_mesh.draw(view, projection_matrix);
+            wave_mesh.draw(view, projection_matrix);
         }
 
         imgui.render();

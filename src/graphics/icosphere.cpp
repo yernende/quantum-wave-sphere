@@ -13,26 +13,31 @@ namespace {
 
 using MidpointCache = std::unordered_map<std::uint64_t, std::uint32_t>;
 
+MeshVertex make_sphere_vertex(const glm::vec3& position) {
+    const glm::vec3 normalized_position = glm::normalize(position);
+    return MeshVertex{.position = normalized_position, .normal = normalized_position};
+}
+
 MeshData make_base_icosphere() {
     constexpr float phi = std::numbers::phi_v<float>;
 
     return MeshData{
-        .positions =
+        .vertices =
             {
-                glm::normalize(glm::vec3{-1.0F, phi, 0.0F}),
-                glm::normalize(glm::vec3{1.0F, phi, 0.0F}),
-                glm::normalize(glm::vec3{-1.0F, -phi, 0.0F}),
-                glm::normalize(glm::vec3{1.0F, -phi, 0.0F}),
+                make_sphere_vertex(glm::vec3{-1.0F, phi, 0.0F}),
+                make_sphere_vertex(glm::vec3{1.0F, phi, 0.0F}),
+                make_sphere_vertex(glm::vec3{-1.0F, -phi, 0.0F}),
+                make_sphere_vertex(glm::vec3{1.0F, -phi, 0.0F}),
 
-                glm::normalize(glm::vec3{0.0F, -1.0F, phi}),
-                glm::normalize(glm::vec3{0.0F, 1.0F, phi}),
-                glm::normalize(glm::vec3{0.0F, -1.0F, -phi}),
-                glm::normalize(glm::vec3{0.0F, 1.0F, -phi}),
+                make_sphere_vertex(glm::vec3{0.0F, -1.0F, phi}),
+                make_sphere_vertex(glm::vec3{0.0F, 1.0F, phi}),
+                make_sphere_vertex(glm::vec3{0.0F, -1.0F, -phi}),
+                make_sphere_vertex(glm::vec3{0.0F, 1.0F, -phi}),
 
-                glm::normalize(glm::vec3{phi, 0.0F, -1.0F}),
-                glm::normalize(glm::vec3{phi, 0.0F, 1.0F}),
-                glm::normalize(glm::vec3{-phi, 0.0F, -1.0F}),
-                glm::normalize(glm::vec3{-phi, 0.0F, 1.0F}),
+                make_sphere_vertex(glm::vec3{phi, 0.0F, -1.0F}),
+                make_sphere_vertex(glm::vec3{phi, 0.0F, 1.0F}),
+                make_sphere_vertex(glm::vec3{-phi, 0.0F, -1.0F}),
+                make_sphere_vertex(glm::vec3{-phi, 0.0F, 1.0F}),
             },
         .indices =
             {
@@ -97,10 +102,11 @@ std::uint32_t get_or_create_midpoint_index(MeshData& mesh, MidpointCache& cache,
         return cached->second;
     }
 
-    const auto midpoint = glm::normalize((mesh.positions[first] + mesh.positions[second]) * 0.5F);
-    const auto index = static_cast<std::uint32_t>(mesh.positions.size());
+    const glm::vec3 midpoint =
+        glm::normalize((mesh.vertices[first].position + mesh.vertices[second].position) * 0.5F);
+    const auto index = static_cast<std::uint32_t>(mesh.vertices.size());
 
-    mesh.positions.push_back(midpoint);
+    mesh.vertices.push_back(MeshVertex{.position = midpoint, .normal = midpoint});
     cache.emplace(key, index);
 
     return index;

@@ -1,6 +1,24 @@
 # quantum-wave-sphere
 
-Build and development instructions for a cross-platform C++23/OpenGL 4.6 project.
+A cross-platform C++23/OpenGL 4.6 showcase that applies one animated wave field to five
+embedded surfaces: an icosphere, torus, boxy superellipsoid, trefoil-knot tube, and Suzanne.
+
+The Dear ImGui `Geometry` control switches the active preloaded surface without resetting the
+shared animation, wave parameters, pause state, or wireframe mode.
+
+Suzanne uses Blender's original low-poly control cage, compiled directly into the executable as
+typed vertices and triangle indices. Blender is not a build or runtime dependency. To regenerate
+the embedded control cage with Blender 5.2, run:
+
+```powershell
+& "C:\Program Files\Blender Foundation\Blender 5.2\blender.exe" `
+    --background --factory-startup `
+    --python tools/generate_suzanne_control_mesh.py
+```
+
+The generator creates Blender's factory Suzanne, converts it to the application's Y-up coordinate
+system, fits it to a unit bounding sphere, and stores its 507 vertices and 968 triangles without
+runtime parsing or decompression.
 
 ## Platform scope
 

@@ -9,7 +9,7 @@ endif()
 project(
     quantum_wave_sphere
     VERSION 0.1.0
-    DESCRIPTION "OpenGL bootstrap for a procedural spherical-wave visualization"
+    DESCRIPTION "OpenGL showcase for procedural wave-surface visualizations"
     LANGUAGES C CXX
 )
 
@@ -39,6 +39,20 @@ target_sources(
         src/bootstrap/glfw_context.hpp
         src/graphics/shader_program.cpp
         src/graphics/shader_program.hpp
+        src/graphics/geometry_catalog.cpp
+        src/graphics/geometry_catalog.hpp
+        src/graphics/icosphere.cpp
+        src/graphics/icosphere.hpp
+        src/graphics/mesh_data.hpp
+        src/graphics/superellipsoid.cpp
+        src/graphics/superellipsoid.hpp
+        src/graphics/suzanne.cpp
+        src/graphics/suzanne_control_mesh.hpp
+        src/graphics/suzanne.hpp
+        src/graphics/torus.cpp
+        src/graphics/torus.hpp
+        src/graphics/torus_knot.cpp
+        src/graphics/torus_knot.hpp
         src/support/app_options.hpp
         src/support/opengl_diagnostics.cpp
         src/support/opengl_diagnostics.hpp
@@ -46,10 +60,8 @@ target_sources(
         src/support/smoke_test.hpp
         src/ui/imgui_session.cpp
         src/ui/imgui_session.hpp
-        src/graphics/icosphere.hpp
-        src/graphics/icosphere.cpp
-        src/demo/sphere_mesh.hpp
-        src/demo/sphere_mesh.cpp
+        src/demo/wave_mesh.hpp
+        src/demo/wave_mesh.cpp
 )
 set_target_properties(
     quantum_wave_sphere
@@ -76,10 +88,27 @@ if(BUILD_TESTING)
     target_sources(
         quantum_wave_sphere_tests
         PRIVATE
-            src/graphics/icosphere.cpp
+            src/graphics/geometry_catalog.cpp
+            src/graphics/geometry_catalog.hpp
             src/graphics/icosphere.hpp
+            src/graphics/icosphere.cpp
+            src/graphics/mesh_data.hpp
+            src/graphics/superellipsoid.cpp
+            src/graphics/superellipsoid.hpp
+            src/graphics/suzanne.cpp
+            src/graphics/suzanne_control_mesh.hpp
+            src/graphics/suzanne.hpp
+            src/graphics/torus.cpp
+            src/graphics/torus.hpp
+            src/graphics/torus_knot.cpp
+            src/graphics/torus_knot.hpp
             tests/app_options_test.cpp
             tests/icosphere_test.cpp
+            tests/mesh_test_support.hpp
+            tests/superellipsoid_test.cpp
+            tests/suzanne_test.cpp
+            tests/torus_test.cpp
+            tests/torus_knot_test.cpp
     )
     set_target_properties(quantum_wave_sphere_tests PROPERTIES CXX_EXTENSIONS OFF)
     target_include_directories(

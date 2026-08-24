@@ -28,7 +28,7 @@ TEST_CASE("icosphere subdivision levels produce the expected mesh sizes") {
         const qws::MeshData mesh = qws::make_icosphere(expected.subdivisions);
 
         CAPTURE(expected.subdivisions);
-        CHECK(mesh.positions.size() == expected.vertices);
+        CHECK(mesh.vertices.size() == expected.vertices);
         CHECK(mesh.indices.size() == expected.faces * 3);
     }
 }
@@ -37,11 +37,12 @@ TEST_CASE("icosphere positions and indices contain valid data") {
     constexpr float epsilon = 0.00001F;
     const qws::MeshData mesh = qws::make_icosphere(4);
 
-    for (const glm::vec3& position : mesh.positions) {
-        CHECK(std::abs(glm::length(position) - 1.0F) < epsilon);
+    for (const qws::MeshVertex& vertex : mesh.vertices) {
+        CHECK(std::abs(glm::length(vertex.position) - 1.0F) < epsilon);
+        CHECK(std::abs(glm::length(vertex.normal) - 1.0F) < epsilon);
     }
 
     for (const std::uint32_t index : mesh.indices) {
-        CHECK(index < mesh.positions.size());
+        CHECK(index < mesh.vertices.size());
     }
 }
