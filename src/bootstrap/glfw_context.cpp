@@ -9,6 +9,8 @@
 namespace qws {
 namespace {
 
+constexpr int antialiasing_sample_count = 4;
+
 void glfw_error_callback(int error_code, const char* description) {
     std::cerr << "GLFW error " << error_code << ": " << description << '\n';
 }
@@ -42,6 +44,7 @@ Window create_window(int width, int height, std::string_view title) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_SAMPLES, antialiasing_sample_count);
 #ifndef NDEBUG
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif

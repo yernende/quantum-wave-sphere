@@ -303,7 +303,10 @@ void WaveMesh::regenerate_wave_sources() noexcept {
     wave_sources_dirty_ = true;
 }
 
-constexpr float surface_rotation_speed = 0.25F;
+double WaveMesh::default_animation_period_seconds() noexcept {
+    static_assert(default_wave_speed / surface_rotation_speed == 4.0F);
+    return 2.0 * std::numbers::pi_v<double> / static_cast<double>(surface_rotation_speed);
+}
 
 // The names carry fixed transform roles; strong wrapper types would add noise here.
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
@@ -321,7 +324,21 @@ void WaveMesh::draw(const glm::mat4& view_matrix, const glm::mat4& projection_ma
     const auto rotation = static_cast<float>(rotation_angle_radians_);
     const GeometryKind active_geometry =
         all_geometry_kinds[static_cast<std::size_t>(setting_geometry_index_)];
-    const glm::mat4 model_matrix = make_model_rotation(active_geometry, rotation);
+
+    draw_frame(view_matrix, projection_matrix, active_geometry, simulation_time, rotation);
+}
+
+void WaveMesh::draw_at_time(const glm::mat4& view_matrix, const glm::mat4& projection_matrix,
+                            GeometryKind geometry, double simulation_time_seconds) noexcept {
+    const auto simulation_time = static_cast<float>(simulation_time_seconds);
+    const auto rotation =
+        static_cast<float>(static_cast<double>(surface_rotation_speed) * simulation_time_seconds);
+    draw_frame(view_matrix, projection_matrix, geometry, simulation_time, rotation);
+}
+
+void WaveMesh::draw_frame(const glm::mat4& view_matrix, const glm::mat4& projection_matrix,
+                          GeometryKind geometry, float simulation_time, float rotation) noexcept {
+    const glm::mat4 model_matrix = make_model_rotation(geometry, rotation);
 
     glUseProgram(program_.id());
 
@@ -345,11 +362,11 @@ void WaveMesh::draw(const glm::mat4& view_matrix, const glm::mat4& projection_ma
         wave_sources_dirty_ = false;
     }
 
-    const GpuGeometry& geometry = geometries_[static_cast<std::size_t>(setting_geometry_index_)];
-    geometry.bind();
+    const GpuGeometry& gpu_geometry = geometries_[geometry_index(geometry)];
+    gpu_geometry.bind();
 
     glPolygonMode(GL_FRONT_AND_BACK, setting_wireframe_ ? GL_LINE : GL_FILL);
-    glDrawElements(GL_TRIANGLES, geometry.index_count(), GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, gpu_geometry.index_count(), GL_UNSIGNED_INT, nullptr);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

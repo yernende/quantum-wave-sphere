@@ -37,5 +37,6 @@ inline constexpr std::size_t geometry_kind_count = all_geometry_kinds.size();
 }
 
 [[nodiscard]] MeshData make_showcase_geometry(GeometryKind kind);
+[[nodiscard]] std::array<MeshData, geometry_kind_count> make_showcase_geometries();
 
 } // namespace qws

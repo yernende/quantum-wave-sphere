@@ -44,4 +44,13 @@ MeshData make_showcase_geometry(GeometryKind kind) {
     throw std::invalid_argument{"Unknown procedural geometry kind."};
 }
 
+std::array<MeshData, geometry_kind_count> make_showcase_geometries() {
+    std::array<MeshData, geometry_kind_count> geometries;
+    for (const GeometryKind kind : all_geometry_kinds) {
+        geometries[geometry_index(kind)] = make_showcase_geometry(kind);
+    }
+
+    return geometries;
+}
+
 } // namespace qws

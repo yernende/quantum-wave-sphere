@@ -6,6 +6,36 @@ embedded surfaces: an icosphere, torus, boxy superellipsoid, trefoil-knot tube, 
 The Dear ImGui `Geometry` control switches the active preloaded surface without resetting the
 shared animation, wave parameters, pause state, or wireframe mode.
 
+## Geometry gallery
+
+Each preview uses the application defaults and samples the complete shared `8π`-second animation
+period. The duplicate terminal frame is omitted, so every GIF repeats with one ordinary frame step
+across its loop boundary.
+
+| Icosphere | Torus |
+|:--:|:--:|
+| ![Animated wave field on an icosphere](docs/media/geometries/icosphere.gif) | ![Animated wave field on a torus](docs/media/geometries/torus.gif) |
+| Superellipsoid | Trefoil knot |
+| ![Animated wave field on a superellipsoid](docs/media/geometries/superellipsoid.gif) | ![Animated wave field on a trefoil knot](docs/media/geometries/trefoil-knot.gif) |
+| Suzanne | |
+| ![Animated wave field on Suzanne](docs/media/geometries/suzanne.gif) | |
+
+Regenerate every preview from the renderer with Python 3.9 or newer, FFmpeg, ffprobe, and the
+platform build prerequisites listed below:
+
+```text
+# Windows
+python tools/generate_readme_animations.py
+
+# Linux
+python3 tools/generate_readme_animations.py
+```
+
+The standard-library-only generator builds a platform-specific Release executable, captures
+deterministic RGB24 frames from a hidden OpenGL window, and uses FFmpeg to create and validate the
+looping GIFs. Linux capture requires an active X11 or XWayland display. Run the script with
+`--help` to select geometries, dimensions, frame rate, output location, or raw-frame retention.
+
 Suzanne uses Blender's original low-poly control cage, compiled directly into the executable as
 typed vertices and triangle indices. Blender is not a build or runtime dependency. To regenerate
 the embedded control cage with Blender 5.2, run:
@@ -37,7 +67,8 @@ manifest is pinned to vcpkg commit `9e593bb18ea69cc5095e012465dcd675a822ed0d` (r
 
 A reproducibly generated GLAD2 v2.0.8 OpenGL 4.6 Core loader is checked in under
 `third_party/glad`; its exact source revision and generator arguments are recorded in
-`third_party/glad/PROVENANCE.md`. A clean build does not need Python or Jinja2.
+`third_party/glad/PROVENANCE.md`. A clean application build does not need Python or Jinja2; Python
+is only needed to regenerate the README animations or the checked-in Suzanne control mesh.
 
 To keep vcpkg local to the checkout:
 

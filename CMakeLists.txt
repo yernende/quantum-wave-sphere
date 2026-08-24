@@ -37,6 +37,10 @@ target_sources(
         src/main.cpp
         src/bootstrap/glfw_context.cpp
         src/bootstrap/glfw_context.hpp
+        src/capture/animation_capture.cpp
+        src/capture/animation_capture.hpp
+        src/demo/showcase_scene.cpp
+        src/demo/showcase_scene.hpp
         src/graphics/shader_program.cpp
         src/graphics/shader_program.hpp
         src/graphics/geometry_catalog.cpp

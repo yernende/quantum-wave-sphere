@@ -20,11 +20,18 @@ class WaveMesh final {
     WaveMesh(WaveMesh&&) = delete;
     WaveMesh& operator=(WaveMesh&&) = delete;
 
+    [[nodiscard]] static double default_animation_period_seconds() noexcept;
+
     void show_controls() noexcept;
 
     // The names carry fixed transform roles; strong wrapper types would add noise here.
     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     void draw(const glm::mat4& view, const glm::mat4& projection) noexcept;
+
+    // Explicit simulation time bypasses the interactive wall clock and geometry selector.
+    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+    void draw_at_time(const glm::mat4& view, const glm::mat4& projection, GeometryKind geometry,
+                      double simulation_time_seconds) noexcept;
 
   private:
     class GpuGeometry final {
@@ -51,8 +58,12 @@ class WaveMesh final {
     };
 
     static constexpr int max_wave_count = 16;
+    static constexpr float default_wave_speed = 1.0F;
+    static constexpr float surface_rotation_speed = 0.25F;
 
     void regenerate_wave_sources() noexcept;
+    void draw_frame(const glm::mat4& view, const glm::mat4& projection, GeometryKind geometry,
+                    float simulation_time, float rotation) noexcept;
 
     ShaderProgram program_;
     std::array<GpuGeometry, geometry_kind_count> geometries_;
@@ -80,7 +91,7 @@ class WaveMesh final {
     int setting_wave_count_{2};
     float setting_amplitude_{0.001F};
     float setting_cycles_{3.0F};
-    float setting_speed_{1.0F};
+    float setting_speed_{default_wave_speed};
     float setting_decay_{0.5F};
     bool setting_paused_{false};
     bool setting_wireframe_{false};
