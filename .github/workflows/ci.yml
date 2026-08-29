@@ -24,7 +24,7 @@ jobs:
     env:
       VCPKG_ROOT: ${{ github.workspace }}/.tools/vcpkg
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
 
       - name: Bootstrap pinned vcpkg
         shell: pwsh
@@ -54,7 +54,7 @@ jobs:
       CXX: clang++
       VCPKG_ROOT: ${{ github.workspace }}/.tools/vcpkg
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
 
       - name: Install GLFW build prerequisites
         run: |
@@ -86,7 +86,7 @@ jobs:
     name: macOS / unsupported-platform contract
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
 
       - name: Verify the explicit macOS rejection
         shell: bash
