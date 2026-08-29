@@ -13,7 +13,7 @@ inline constexpr std::string_view blender_version = "5.2.0 LTS";
 inline constexpr std::string_view control_cage_sha256 =
     "8382B92DFA6141F9B993995B6DCB93CD338ECD63D1E8AC715883BA52CB28633D";
 // clang-format off
-inline constexpr std::array vertices{
+inline constexpr std::array<MeshVertex, 507> vertices{
     MeshVertex{.position = {0.29447186F, 0.110426947F, 0.515325725F}, .normal = {0.727711856F, -0.654494822F, 0.205114424F}},
     MeshVertex{.position = {-0.29447186F, 0.110426947F, 0.515325725F}, .normal = {-0.727711856F, -0.654494822F, 0.205114424F}},
     MeshVertex{.position = {0.336539268F, 0.0631011128F, 0.462741494F}, .normal = {0.604045153F, -0.5102458F, 0.612191737F}},

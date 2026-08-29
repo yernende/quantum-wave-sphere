@@ -122,7 +122,7 @@ inline constexpr std::string_view blender_version = "{bpy.app.version_string}";
 inline constexpr std::string_view control_cage_sha256 =
     "{control_cage_hash(mesh)}";
 // clang-format off
-inline constexpr std::array vertices{{
+inline constexpr std::array<MeshVertex, {len(vertex_lines)}> vertices{{
 {',\n'.join(vertex_lines)},
 }};
 inline constexpr std::array<std::uint32_t, {len(indices)}> indices{{
