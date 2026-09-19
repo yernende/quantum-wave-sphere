@@ -6,6 +6,15 @@ embedded surfaces: an icosphere, torus, boxy superellipsoid, trefoil-knot tube, 
 The Dear ImGui `Geometry` control switches the active preloaded surface without resetting the
 shared animation, wave parameters, pause state, or wireframe mode.
 
+> **Learning project and AI assistance**
+>
+> This is an educational repository documenting my approach to learning C++ and graphics
+> programming. I use AI to brainstorm ideas, plan the project, and write code incrementally.
+> At each step, I study and review the implementation, working through the concepts and design
+> decisions behind it. The code is AI-assisted, and I have personally worked through all of it
+> and understand how it works. Building that understanding is the purpose of the project and
+> the central part of this learning method.
+
 ## Geometry gallery
 
 Each preview uses the application defaults and samples the complete shared `8π`-second animation
